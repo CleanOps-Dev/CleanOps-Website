@@ -369,7 +369,7 @@ function App() {
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <FaCheck className="text-green-400 mt-1 flex-shrink-0" />
-                                            <span className="text-gray-300"><strong className="text-white">Enable "Force Host"</strong> - Activates hosting mode - now search for a Public Match to open your lobby.</span>
+                                            <span className="text-gray-300"><strong className="text-white">Click "Start Hosting"</strong> - Activates hosting mode - now search for a Public Match to open your lobby.</span>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <FaCheck className="text-green-400 mt-1 flex-shrink-0" />
