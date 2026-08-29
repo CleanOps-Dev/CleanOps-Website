@@ -1,0 +1,104 @@
+<svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#171717" />
+            <stop offset="55%" stop-color="#1a1120" />
+            <stop offset="100%" stop-color="#190125" />
+        </linearGradient>
+
+        <radialGradient id="hubGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#A373BA" stop-opacity="0.35" />
+            <stop offset="100%" stop-color="#A373BA" stop-opacity="0" />
+        </radialGradient>
+
+        <filter id="glow" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <rect width="1920" height="1080" fill="url(#bg)" />
+
+    <!-- soft ambient glow behind the two busiest hubs -->
+    <circle cx="420" cy="350" r="260" fill="url(#hubGlow)" />
+    <circle cx="1010" cy="280" r="240" fill="url(#hubGlow)" />
+
+    <!-- faint lat/long grid for map feel -->
+    <g stroke="#A373BA" stroke-opacity="0.07" stroke-width="1">
+        <line x1="0" y1="169" x2="1920" y2="169" />
+        <line x1="0" y1="349" x2="1920" y2="349" />
+        <line x1="0" y1="529" x2="1920" y2="529" />
+        <line x1="0" y1="709" x2="1920" y2="709" />
+        <line x1="0" y1="889" x2="1920" y2="889" />
+        <line x1="0" y1="1069" x2="1920" y2="1069" />
+        <line x1="240" y1="0" x2="240" y2="1080" />
+        <line x1="480" y1="0" x2="480" y2="1080" />
+        <line x1="720" y1="0" x2="720" y2="1080" />
+        <line x1="960" y1="0" x2="960" y2="1080" />
+        <line x1="1200" y1="0" x2="1200" y2="1080" />
+        <line x1="1440" y1="0" x2="1440" y2="1080" />
+        <line x1="1680" y1="0" x2="1680" y2="1080" />
+    </g>
+
+    <!-- stylized continents, plotted on the same equirectangular projection as the server nodes below -->
+    <g fill="#190125" fill-opacity="0.55" stroke="#A373BA" stroke-opacity="0.4" stroke-width="1.5" stroke-linejoin="round">
+        <!-- North America -->
+        <polygon points="80,169 300,155 453,169 510,190 560,222 590,260 613,302 580,360 533,408 480,430 453,445 400,434 360,400 329,375 309,360 265,320 240,249 200,210" />
+        <!-- South America -->
+        <polygon points="560,487 630,470 693,540 720,600 700,650 665,700 645,745 630,780 610,740 597,700 575,640 560,600 552,560 549,530" />
+        <!-- Europe -->
+        <polygon points="880,220 915,180 950,150 1000,138 1050,140 1090,165 1130,200 1125,240 1120,280 1085,315 1050,340 1010,335 970,330 935,305 900,280 885,250" />
+        <!-- Africa -->
+        <polygon points="1013,344 1075,335 1131,424 1160,445 1180,470 1165,535 1150,600 1110,665 1067,725 1030,690 1000,650 975,575 950,500 908,480 869,460 905,420 950,380" />
+        <!-- Asia -->
+        <polygon points="1147,270 1200,220 1250,180 1350,160 1440,169 1550,155 1650,150 1750,170 1840,196 1795,250 1750,300 1707,349 1680,385 1650,420 1590,440 1531,460 1490,440 1450,420 1375,410 1300,420 1250,428 1227,434 1200,395 1180,350" />
+        <!-- Australia -->
+        <polygon points="1648,614 1685,605 1723,603 1755,615 1780,710 1733,741 1690,735 1650,730 1610,728 1589,725 1575,690 1568,656 1600,614" />
+    </g>
+
+    <!-- network arcs between regional clusters -->
+    <g fill="none" stroke="#E2A6FE" stroke-opacity="0.35" stroke-width="1.5">
+        <path d="M 451,382 Q 720,140 973,281" />
+        <path d="M 973,281 Q 1500,60 1766,719" />
+        <path d="M 451,382 Q 500,560 711,665" />
+        <path d="M 711,665 Q 850,500 973,281" stroke-opacity="0.22" />
+        <path d="M 329,360 Q 400,300 468,336" stroke-opacity="0.22" />
+    </g>
+
+    <!-- real Clean Ops advertise-location server nodes (lat/lng from host::advertise_locations) -->
+    <g>
+        <circle cx="973" cy="281" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="4.5s" begin="0.2s" repeatCount="indefinite" /></circle> <!-- France (Ile-de-France) -->
+        <circle cx="1766" cy="719" r="5" fill="#E2A6FE" filter="url(#glow)" /> <!-- Australia (NSW) -->
+        <circle cx="940" cy="326" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="5s" begin="1.1s" repeatCount="indefinite" /></circle> <!-- Spain (Madrid) -->
+        <circle cx="329" cy="360" r="5" fill="#E2A6FE" filter="url(#glow)" />  <!-- USA (California) -->
+        <circle cx="451" cy="382" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="4s" begin="0.6s" repeatCount="indefinite" /></circle>  <!-- USA (Texas) -->
+        <circle cx="1006" cy="275" r="5" fill="#E2A6FE" filter="url(#glow)" /> <!-- Germany (Hessen) -->
+        <circle cx="1072" cy="264" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="4.8s" begin="1.6s" repeatCount="indefinite" /></circle> <!-- Poland (Mazowieckie) -->
+        <circle cx="1009" cy="299" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="4.2s" begin="0.9s" repeatCount="indefinite" /></circle> <!-- Italy (Lombardia) -->
+        <circle cx="986" cy="263" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="5.3s" begin="0.4s" repeatCount="indefinite" /></circle>  <!-- Netherlands (Noord-Holland) -->
+        <circle cx="711" cy="665" r="5" fill="#E2A6FE" filter="url(#glow)" />  <!-- Brazil (Sao Paulo) -->
+        <circle cx="559" cy="329" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="4.6s" begin="1.3s" repeatCount="indefinite" /></circle>  <!-- USA (Pennsylvania) -->
+        <circle cx="468" cy="336" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="4.1s" begin="0.7s" repeatCount="indefinite" /></circle>  <!-- USA (Missouri) -->
+        <circle cx="532" cy="404" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="5.1s" begin="1.9s" repeatCount="indefinite" /></circle>  <!-- USA (Florida) -->
+        <circle cx="954" cy="263" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="4.4s" begin="1.5s" repeatCount="indefinite" /></circle>  <!-- UK (England) -->
+        <circle cx="510" cy="361" r="4" fill="#E2A6FE" filter="url(#glow)"><animate attributeName="opacity" values="0.7;1;0.7" dur="4.9s" begin="0.3s" repeatCount="indefinite" /></circle>  <!-- USA (Georgia) -->
+
+        <!-- animated radar-ping rings on the three primary hubs -->
+        <circle cx="329" cy="360" r="6" fill="none" stroke="#E2A6FE" stroke-width="1.5">
+            <animate attributeName="r" values="6;30" dur="3s" begin="0s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.6;0" dur="3s" begin="0s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="1006" cy="275" r="6" fill="none" stroke="#E2A6FE" stroke-width="1.5">
+            <animate attributeName="r" values="6;30" dur="3s" begin="1s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.6;0" dur="3s" begin="1s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="1766" cy="719" r="6" fill="none" stroke="#E2A6FE" stroke-width="1.5">
+            <animate attributeName="r" values="6;30" dur="3s" begin="2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.6;0" dur="3s" begin="2s" repeatCount="indefinite" />
+        </circle>
+    </g>
+</svg>

@@ -23,6 +23,8 @@ const galleryImages = [
     `${import.meta.env.BASE_URL}img/gallery-2.jpg`,
     `${import.meta.env.BASE_URL}img/gallery-3.jpg`,
     `${import.meta.env.BASE_URL}img/gallery-4.jpg`,
+    `${import.meta.env.BASE_URL}img/gallery-5.jpg`,
+    `${import.meta.env.BASE_URL}img/gallery-6.jpg`,
 ];
 
 // Prepare slides for the lightbox
@@ -77,7 +79,7 @@ export default function ImageGallery() {
             <div className="w-full h-full grid place-items-center">
                 <svg width="80%" height="80%" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
                     <foreignObject x="0" y="0" width="1600" height="900">
-                        <div className="w-full h-full rounded-lg overflow-hidden border-2 border-gray-700/50 shadow-2xl">
+                        <div className="w-full h-full rounded-lg overflow-hidden border-2 border-neutral-700/50 shadow-2xl">
                             <Swiper
                                 className="mySwiper w-full h-full group"
                                 modules={[Pagination, Navigation, Autoplay, EffectFade]}

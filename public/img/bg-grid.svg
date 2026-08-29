@@ -1,0 +1,28 @@
+<svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#171717" />
+            <stop offset="55%" stop-color="#1a1120" />
+            <stop offset="100%" stop-color="#190125" />
+        </linearGradient>
+    </defs>
+
+    <rect width="1920" height="1080" fill="url(#bg)" />
+
+    <!-- faint grid texture, no map content -->
+    <g stroke="#A373BA" stroke-opacity="0.07" stroke-width="1">
+        <line x1="0" y1="169" x2="1920" y2="169" />
+        <line x1="0" y1="349" x2="1920" y2="349" />
+        <line x1="0" y1="529" x2="1920" y2="529" />
+        <line x1="0" y1="709" x2="1920" y2="709" />
+        <line x1="0" y1="889" x2="1920" y2="889" />
+        <line x1="0" y1="1069" x2="1920" y2="1069" />
+        <line x1="240" y1="0" x2="240" y2="1080" />
+        <line x1="480" y1="0" x2="480" y2="1080" />
+        <line x1="720" y1="0" x2="720" y2="1080" />
+        <line x1="960" y1="0" x2="960" y2="1080" />
+        <line x1="1200" y1="0" x2="1200" y2="1080" />
+        <line x1="1440" y1="0" x2="1440" y2="1080" />
+        <line x1="1680" y1="0" x2="1680" y2="1080" />
+    </g>
+</svg>
