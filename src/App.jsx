@@ -12,7 +12,16 @@ import ImageGallery from './components/ImageGallery';
 import FeatureCard from './components/FeatureCard';
 import FaqItem from './components/FaqItem';
 
+// Animated node layer for the P2P map, inlined at build time so it can live on its
+// own compositor layer instead of forcing the map background to re-rasterize.
+// The map itself ships as WebP: as an SVG it cost ~52ms to rasterize on first
+// paint (and ~16ms on every repeat, since SVG rasters are not cached as
+// bitmaps), which showed up as a stutter the first time the section scrolled in.
+import p2pNodesSvg from './assets/p2p-nodes.svg?raw';
+
 const FAQ_URL = "https://raw.githubusercontent.com/wiki/notnightwolf/cleanopsT7/Frequently-Asked-Questions.md";
+const VERSION_URL = "https://raw.githubusercontent.com/notnightwolf/cleanopsT7/refs/heads/main/cleanops/version.txt";
+const FALLBACK_VERSION = "2.5.2";
 
 const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -45,6 +54,9 @@ function App() {
     const [disclaimerHtml, setDisclaimerHtml] = useState('');
     const [loadingFaqs, setLoadingFaqs] = useState(true);
     const [faqError, setFaqError] = useState(null);
+
+    // State for the live mod version badge
+    const [cleanOpsVersion, setCleanOpsVersion] = useState(FALLBACK_VERSION);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -124,6 +136,18 @@ function App() {
 
         fetchFaqs();
     }, []); // Empty dependency array ensures this runs only once
+
+    // Effect to fetch the current mod version directly from GitHub, so the badge
+    // never goes stale on a static host (no rebuild/redeploy needed after a mod update).
+    useEffect(() => {
+        fetch(VERSION_URL)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return response.text();
+            })
+            .then(text => setCleanOpsVersion(text.trim()))
+            .catch(error => console.error("Failed to fetch Clean Ops version:", error));
+    }, []);
 
     // This effect implements a custom scroll-snapping behavior that feels more natural.
     useEffect(() => {
@@ -228,29 +252,36 @@ function App() {
                 <div className="bg-dark-primary">
 
                     {/* ============== HERO SECTION (PARALLAX) ============== */}
-                    <ParallaxSection ref={heroRef} imageUrl={`${import.meta.env.BASE_URL}img/bg-hero.jpg`} gradientClass="bg-black/40">
+                    <ParallaxSection ref={heroRef} imageUrl={`${import.meta.env.BASE_URL}img/bg-hero.jpg`} gradientClass="bg-gradient-to-b from-black/10 via-black/30 to-black/60" particles>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.8 }}
                             className="container mx-auto px-4"
                         >
+                            <span className="inline-flex items-center gap-2 bg-dark-secondary/60 backdrop-blur-sm text-brand-purple-light text-sm font-semibold px-4 py-1.5 rounded-full mb-6 border border-brand-purple/30">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                                Clean Ops v{cleanOpsVersion}
+                            </span>
                             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
                                 <span className="text-4xl md:text-6xl font-bold">Enhance Your <span className="bg-gradient-to-b from-yellow-300 to-orange-700 text-transparent bg-clip-text whitespace-nowrap">Black Ops 3</span> Experience</span>
                                 <br />
                                 <span className="mt-8
                                  block">
-                                    <span className="text-gray-400 text-4xl md:text-6xl font-bold mr-2">—</span>
-                                    <span className="bg-gradient-to-b from-purple-400 to-purple-600 text-transparent bg-clip-text whitespace-nowrap">Clean Ops</span>
+                                    <span className="text-neutral-400 text-4xl md:text-6xl font-bold mr-2">—</span>
+                                    <span className="bg-gradient-to-b from-brand-purple-light to-brand-purple text-transparent bg-clip-text whitespace-nowrap">Clean Ops</span>
                                 </span>
                             </h1>
-                            <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-8 mt-16">
+                            <p className="text-lg md:text-xl text-neutral-200 max-w-3xl mx-auto mb-8 mt-16">
                                 <span className="font-bold">Clean Ops</span> is the essential community patch for PC, trying to deliver a safer, smoother, and cheat-free Black Ops 3 Multiplayer.
                             </p>
                             <a
                                 href="#install"
                                 onClick={(e) => handleSmoothScroll(e, '#install')}
-                                className="inline-block bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold py-4 px-10 rounded-full text-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                                className="inline-block bg-gradient-to-r from-brand-purple to-brand-purple-dark text-white font-bold py-4 px-10 rounded-full text-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
                             >
                                 Download Now
                             </a>
@@ -319,23 +350,24 @@ function App() {
                     <ParallaxSection
                         id="p2p"
                         ref={p2pRef}
-                        imageUrl={`${import.meta.env.BASE_URL}img/bg-features.jpg`}
-                        gradientClass="bg-black/70"
+                        imageUrl={`${import.meta.env.BASE_URL}img/bg-p2p-tactical.webp`}
+                        overlaySvg={p2pNodesSvg}
+                        gradientClass="bg-black/50"
                         className="flex flex-col p-4 sm:p-6 md:p-8"
                     >
-                        <div className="container mx-auto px-6 py-8 md:py-16 max-w-5xl">
+                        <div className="container mx-auto px-6 py-8 md:py-16 max-w-6xl">
                             <motion.div
                                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}
                                 className="text-center mb-8 md:mb-12"
                             >
-                                <span className="inline-flex items-center gap-2 bg-purple-500/20 text-purple-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4 border border-purple-500/30">
+                                <span className="inline-flex items-center gap-2 bg-brand-purple/20 text-brand-purple-light text-sm font-semibold px-4 py-1.5 rounded-full mb-4 border border-brand-purple/30">
                                     <FaNetworkWired /> P2P Hosting
                                 </span>
                                 <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
                                     Host Your Own
-                                    <span className="bg-gradient-to-r from-purple-400 to-purple-600 text-transparent bg-clip-text"> Sessions</span>
+                                    <span className="bg-gradient-to-r from-brand-purple-light to-brand-purple text-transparent bg-clip-text"> Sessions</span>
                                 </h2>
-                                <p className="text-gray-300 text-lg mt-4 max-w-2xl mx-auto">
+                                <p className="text-neutral-300 text-lg mt-4 max-w-2xl mx-auto">
                                     Take the power into your own hands. With Clean Ops, you can host your own P2P sessions - keeping multiplayer alive, independent of any official servers.
                                 </p>
                             </motion.div>
@@ -346,38 +378,38 @@ function App() {
                             >
                                 {/* P2P UI Image */}
                                 <div className="flex-shrink-0 relative group">
-                                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-purple-400 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
+                                    <div className="absolute -inset-1 bg-gradient-to-r from-brand-purple to-brand-purple-light rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
                                     <img
                                         src={`${import.meta.env.BASE_URL}img/p2p-1.jpg`}
                                         alt="Clean Ops P2P Hosting Settings UI"
-                                        className="relative rounded-xl border-2 border-purple-500/30 shadow-2xl shadow-purple-900/30 w-full"
-                                        style={{ maxWidth: '408px', aspectRatio: '1 / 1', objectFit: 'cover' }}
+                                        className="relative rounded-xl border-2 border-brand-purple/30 shadow-2xl shadow-brand-purple-dark/40 w-full"
+                                        style={{ maxWidth: '600px', aspectRatio: '3 / 2', objectFit: 'cover' }}
                                     />
                                 </div>
 
                                 {/* Text Content */}
                                 <div className="text-left space-y-5">
                                     <h3 className="text-2xl font-bold text-white">How It Works</h3>
-                                    <p className="text-gray-300">
+                                    <p className="text-neutral-300">
                                         Clean Ops lets any player become a session host - no dedicated server needed. Open the <strong className="text-white">"Sessions"</strong> tab in the in-game UI and configure your lobby in seconds.
                                     </p>
 
                                     <ul className="space-y-3">
                                         <li className="flex items-start gap-3">
                                             <FaCheck className="text-green-400 mt-1 flex-shrink-0" />
-                                            <span className="text-gray-300"><strong className="text-white">Set Your Region</strong> - Advertise your lobby to players in your area for the best connection quality.</span>
+                                            <span className="text-neutral-300"><strong className="text-white">Automatic Region Detection</strong> - Your lobby's region is set automatically, giving nearby players the best possible connection quality.</span>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <FaCheck className="text-green-400 mt-1 flex-shrink-0" />
-                                            <span className="text-gray-300"><strong className="text-white">Click "Start Hosting"</strong> - Activates hosting mode - now search for a Public Match to open your lobby.</span>
+                                            <span className="text-neutral-300"><strong className="text-white">Click "Start Hosting"</strong> - Activates hosting mode - now search for a Public Match to open your lobby.</span>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <FaCheck className="text-green-400 mt-1 flex-shrink-0" />
-                                            <span className="text-gray-300"><strong className="text-white">Adjust Min Players</strong> - Control how many players are needed before the match countdown begins.</span>
+                                            <span className="text-neutral-300"><strong className="text-white">Adjust Min Players</strong> - Control how many players are needed before the match countdown begins.</span>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <FaCheck className="text-green-400 mt-1 flex-shrink-0" />
-                                            <span className="text-gray-300"><strong className="text-white">DLC Control</strong> - Keep "Force Non-DLC Lobby" checked for maximum player reach, or uncheck it to play DLC maps.</span>
+                                            <span className="text-neutral-300"><strong className="text-white">DLC Control</strong> - Keep "Force Non-DLC Lobby" checked for maximum player reach, or uncheck it to play DLC maps.</span>
                                         </li>
                                     </ul>
 
@@ -406,22 +438,22 @@ function App() {
                                 How to Install Clean Ops
                             </motion.h2>
                             <motion.div
-                                className="max-w-3xl mx-auto text-lg text-gray-300 space-y-6"
+                                className="max-w-3xl mx-auto text-lg text-neutral-300 space-y-6"
                                 initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeIn}
                             >
                                 <h3 className="text-2xl font-bold">Windows & Linux Installation</h3>
                                 <ul className="list-disc list-inside space-y-2 pl-4">
-                                    <li>Download the <code className="bg-gray-700 px-1 rounded">d3d11.dll</code> from <a href="https://raw.githubusercontent.com/notnightwolf/cleanopsT7/main/d3d11.dll" className="text-brand-purple hover:underline" target="_blank" rel="noopener noreferrer">here</a>.</li>
-                                    <li>Move the <code className="bg-gray-700 px-1 rounded">d3d11.dll</code> into your <strong>Black Ops 3 directory</strong> (usually located in <code className="bg-gray-700 px-1 rounded break-all">C:\Program Files (x86)\Steam\steamapps\common\Call of Duty Black Ops III</code>).
-                                        <p className="text-sm text-gray-400 mt-1 ml-4"><strong>Tip:</strong> Right-click the game in Steam → Manage → Browse local files</p>
+                                    <li>Download the <code className="bg-neutral-700 px-1 rounded">d3d11.dll</code> from <a href="https://raw.githubusercontent.com/notnightwolf/cleanopsT7/main/d3d11.dll" className="text-brand-purple hover:underline" target="_blank" rel="noopener noreferrer">here</a>.</li>
+                                    <li>Move the <code className="bg-neutral-700 px-1 rounded">d3d11.dll</code> into your <strong>Black Ops 3 directory</strong> (usually located in <code className="bg-neutral-700 px-1 rounded break-all">C:\Program Files (x86)\Steam\steamapps\common\Call of Duty Black Ops III</code>).
+                                        <p className="text-sm text-neutral-400 mt-1 ml-4"><strong>Tip:</strong> Right-click the game in Steam → Manage → Browse local files</p>
                                     </li>
                                     <li>Launch the game through <strong>Steam</strong> as you normally would.</li>
                                 </ul>
-                                <p className="text-sm text-gray-400 mt-4"><strong>Linux Note:</strong> If Clean Ops doesn't load, set your Steam Launch Options to: <code className="bg-gray-700 px-1 rounded">WINEDLLOVERRIDES="d3d11=n,b" %command%</code>.</p>
+                                <p className="text-sm text-neutral-400 mt-4"><strong>Linux Note:</strong> If Clean Ops doesn't load, set your Steam Launch Options to: <code className="bg-neutral-700 px-1 rounded">WINEDLLOVERRIDES="d3d11=n,b" %command%</code>.</p>
 
                                 {/* YouTube Embed */}
-                                <p className="text-sm text-gray-400 mt-8">Watch our quick video guide here:</p>
-                                <div className="aspect-video max-w-3xl mx-auto overflow-hidden rounded-lg shadow-2xl border-2 border-gray-700/50 !mt-2">
+                                <p className="text-sm text-neutral-400 mt-8">Watch our quick video guide here:</p>
+                                <div className="aspect-video max-w-3xl mx-auto overflow-hidden rounded-lg shadow-2xl border-2 border-neutral-700/50 !mt-2">
                                     <iframe
                                         className="w-full h-full"
                                         src="https://www.youtube.com/embed/OsUntxCPDSo"
@@ -438,7 +470,7 @@ function App() {
 
                             {/* ============== HOW TO UNINSTALL SECTION ============== */}
                             <motion.div
-                                className="max-w-3xl mx-auto text-lg text-gray-300 space-y-6 mt-16"
+                                className="max-w-3xl mx-auto text-lg text-neutral-300 space-y-6 mt-16"
                                 initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeIn}
                             >
                                 <h2 className="text-3xl font-bold text-center mb-8">
@@ -450,11 +482,8 @@ function App() {
                                         <strong>Temporary Disable (Vanilla Mode):</strong> Hold the <strong>Shift</strong> key immediately after launching the game through Steam. Continue holding it until a popup appears; Clean Ops will not load for that session.
                                     </li>
                                     <li>
-                                        <strong>Via the Clean Ops In-Game UI:</strong> Launch Black Ops 3, open the Clean Ops UI, go to <a href="https://github.com/notnightwolf/cleanopsT7/wiki/Full-Explanation-of-the-Ingame-User-Interface#system" className="text-brand-purple hover:underline" target="_blank" rel="noopener noreferrer">Settings → System</a>, and click the "Delete Clean Ops" button.
-                                    </li>
-                                    <li>
-                                        <strong>Manual Removal:</strong> While Call of Duty: Black Ops 3 is <strong>not</strong> running, navigate to your game's root directory (e.g., <code className="bg-gray-700 px-1 rounded break-all">C:\Program Files (x86)\Steam\steamapps\common\Call of Duty Black Ops III</code>) and delete the <code className="bg-gray-700 px-1 rounded">d3d11.dll</code> file.
-                                        <p className="text-sm text-gray-400 mt-1 ml-4"><strong>Note:</strong> The Clean Ops folder will stay in your game directory but won't do anything without the <code className="bg-gray-700 px-1 rounded">d3d11.dll</code>.</p>
+                                        <strong>Manual Removal:</strong> While Call of Duty: Black Ops 3 is <strong>not</strong> running, navigate to your game's root directory (e.g., <code className="bg-neutral-700 px-1 rounded break-all">C:\Program Files (x86)\Steam\steamapps\common\Call of Duty Black Ops III</code>) and delete the <code className="bg-neutral-700 px-1 rounded">d3d11.dll</code> file.
+                                        <p className="text-sm text-neutral-400 mt-1 ml-4"><strong>Note:</strong> The Clean Ops folder will stay in your game directory but won't do anything without the <code className="bg-neutral-700 px-1 rounded">d3d11.dll</code>.</p>
                                     </li>
                                 </ul>
                             </motion.div>
@@ -473,7 +502,7 @@ function App() {
                             {/* A wrapper to manage content state and prevent layout shifts on load */}
                             <div className="min-h-[10rem]">
                                 {loadingFaqs ? (
-                                    <p className="text-center text-gray-400">Loading FAQs...</p>
+                                    <p className="text-center text-neutral-400">Loading FAQs...</p>
                                 ) : faqError ? (
                                     <p className="text-center text-red-500">{faqError}</p>
                                 ) : (
@@ -498,12 +527,12 @@ function App() {
                                                 ))}
                                             </motion.div>
                                         ) : (
-                                            <p className="text-center text-gray-400">No FAQs found.</p>
+                                            <p className="text-center text-neutral-400">No FAQs found.</p>
                                         )}
 
                                         {disclaimerHtml && (
                                             <motion.p
-                                                className="text-center text-gray-400 mt-8 prose prose-invert max-w-none"
+                                                className="text-center text-neutral-400 mt-8 prose prose-invert max-w-none"
                                                 dangerouslySetInnerHTML={{ __html: disclaimerHtml }}
                                                 initial="hidden"
                                                 whileInView="visible"
@@ -518,25 +547,25 @@ function App() {
                     </section>
 
                     {/* ============== COMMUNITY & FOOTER ============== */}
-                    <footer className="bg-dark-primary border-t border-gray-800">
+                    <footer className="bg-dark-primary border-t border-neutral-800">
                         <section id="community" className="py-20 text-center container mx-auto px-6">
                             <h2 className="text-3xl font-bold mb-6">Join the Community & Get Support</h2>
-                            <p className="mb-8 max-w-2xl mx-auto text-gray-300">Connect with players, report bugs, or appeal a ban on our official channels.</p>
+                            <p className="mb-8 max-w-2xl mx-auto text-neutral-300">Connect with players, report bugs, or appeal a ban on our official channels.</p>
                             <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                                 <a href="https://discord.gg/exUnsW2eaa" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 w-full sm:w-auto justify-center">
                                     <FaDiscord size={24} /> Join our Discord
                                 </a>
-                                <a href="https://github.com/notnightwolf/cleanopsT7" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 w-full sm:w-auto justify-center">
+                                <a href="https://github.com/notnightwolf/cleanopsT7" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-neutral-700 hover:bg-neutral-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 w-full sm:w-auto justify-center">
                                     <FaGithub size={24} /> View on GitHub
                                 </a>
                             </div>
                         </section>
 
-                        <div className="py-10 text-center text-sm text-gray-500 border-t border-gray-800/50">
+                        <div className="py-10 text-center text-sm text-neutral-500 border-t border-neutral-800/50">
                             <div className="mb-4 flex flex-wrap justify-center gap-x-6 gap-y-2">
-                                <a href={`${import.meta.env.BASE_URL}documents/gdpr.html`} target="_blank" rel="noopener noreferrer" className="hover:underline text-gray-400">GDPR Policy</a>
-                                <a href={`${import.meta.env.BASE_URL}documents/privacy-by-design.html`} target="_blank" rel="noopener noreferrer" className="hover:underline text-gray-400">Privacy by Design</a>
-                                <a href={`${import.meta.env.BASE_URL}documents/tos.html`} target="_blank" rel="noopener noreferrer" className="hover:underline text-gray-400">Terms of Service</a>
+                                <a href={`${import.meta.env.BASE_URL}documents/gdpr.html`} target="_blank" rel="noopener noreferrer" className="hover:underline text-neutral-400">GDPR Policy</a>
+                                <a href={`${import.meta.env.BASE_URL}documents/privacy-by-design.html`} target="_blank" rel="noopener noreferrer" className="hover:underline text-neutral-400">Privacy by Design</a>
+                                <a href={`${import.meta.env.BASE_URL}documents/tos.html`} target="_blank" rel="noopener noreferrer" className="hover:underline text-neutral-400">Terms of Service</a>
                             </div>
                             <p className="font-bold mb-2">UNOFFICIAL COMMUNITY PROJECT</p>
                             <p>Clean Ops is a community-developed patch and is not affiliated with, endorsed, or sponsored by Activision Publishing, Inc., Treyarch, or any of their affiliates or subsidiaries.</p>

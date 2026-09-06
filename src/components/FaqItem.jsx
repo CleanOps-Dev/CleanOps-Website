@@ -32,7 +32,7 @@ const FaqItem = ({ question, children }) => {
   return (
     <details
       ref={detailsRef}
-      className="bg-dark-secondary/70 backdrop-blur-sm rounded-lg border border-gray-700/50 transition-colors hover:border-brand-purple group cursor-pointer"
+      className="bg-dark-secondary/70 backdrop-blur-sm rounded-lg border border-neutral-700/50 transition-colors hover:border-brand-purple group cursor-pointer"
       onClick={handleClick}
       open={isOpen}
     >
@@ -40,7 +40,7 @@ const FaqItem = ({ question, children }) => {
         {question}
         <span className="text-brand-purple transform transition-transform duration-300 details-arrow">▾</span>
       </summary>
-      <div className="px-6 pb-6 text-gray-300 prose prose-invert max-w-none">
+      <div className="px-6 pb-6 text-neutral-300 prose prose-invert max-w-none">
         {children}
       </div>
     </details>
