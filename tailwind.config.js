@@ -8,9 +8,11 @@ export default {
         extend: {
             colors: {
                 'brand-orange': '#f59e0b',
-                'brand-purple': '#BF00FF',
-                'dark-primary': '#0f172a',
-                'dark-secondary': '#1e293b',
+                'brand-purple': '#A373BA',
+                'brand-purple-light': '#E2A6FE',
+                'brand-purple-dark': '#190125',
+                'dark-primary': '#171717',
+                'dark-secondary': '#262626',
             },
             fontFamily: {
                 sans: ['Poppins', 'sans-serif'],
