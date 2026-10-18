@@ -397,19 +397,19 @@ function App() {
                                     <ul className="space-y-3">
                                         <li className="flex items-start gap-3">
                                             <FaCheck className="text-green-400 mt-1 flex-shrink-0" />
-                                            <span className="text-neutral-300"><strong className="text-white">Automatic Region Detection</strong> - Your lobby's region is set automatically, giving nearby players the best possible connection quality.</span>
+                                            <span className="text-neutral-300"><strong className="text-white">Adjust Min Players</strong> - Set how many players are needed before the match countdown begins - you can change it at any time, even while hosting.</span>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <FaCheck className="text-green-400 mt-1 flex-shrink-0" />
-                                            <span className="text-neutral-300"><strong className="text-white">Click "Start Hosting"</strong> - Activates hosting mode - now search for a Public Match to open your lobby.</span>
+                                            <span className="text-neutral-300"><strong className="text-white">DLC Control</strong> - Keep "Force Non-DLC Maps" checked for maximum player reach, or uncheck it to play DLC maps.</span>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <FaCheck className="text-green-400 mt-1 flex-shrink-0" />
-                                            <span className="text-neutral-300"><strong className="text-white">Adjust Min Players</strong> - Control how many players are needed before the match countdown begins.</span>
+                                            <span className="text-neutral-300"><strong className="text-white">Choose a Game Mode</strong> - Team Deathmatch is recommended for maximum reach, as it's the mode most players search for. Any other mode works too.</span>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <FaCheck className="text-green-400 mt-1 flex-shrink-0" />
-                                            <span className="text-neutral-300"><strong className="text-white">DLC Control</strong> - Keep "Force Non-DLC Lobby" checked for maximum player reach, or uncheck it to play DLC maps.</span>
+                                            <span className="text-neutral-300"><strong className="text-white">Click "Start Hosting"</strong> - Your lobby opens automatically and players can join right away.</span>
                                         </li>
                                     </ul>
 
